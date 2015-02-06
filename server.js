@@ -1,28 +1,42 @@
 // Server.js
 
 /*
-  Primer borrador de webapp que devuelve "hola soy app-futbol"
-  ante una peticion
+  Primer borrador API de webapp "app-futbol"
 */
 
-// Dependencias
+// modulos ==================================================
 var express = require('express');
-//var http = require('http');
+var app = express();
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 
-var app = express()
-//var server = http.createServer(app);
+var port = process.env.PORT || 8080;
 
-app.get('/', function(request, respond) {
-    respond.send('hola soy app-futbol');
-});
+// get all data of body (POST) parameters
+// parse app/json
+app.use(bodyParser.json());
 
-/*server.listen(3000, function(){
-    console.log('Node server corriendo en http://localhost:3000');
-});*/ 
+// parse app/vnd.api+json as json
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
-var server = app.listen(3000, function() {
-    var host = server.address().address;
-    var port = server.address().port
-    console.log('App escuchando en http://%s:%s', host, port);
-});
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
+// override with X-HTTP-METHOD-OVERRIDE header in the request. Simulate DELETE/PUT
+app.use(methodOverride('X-HTTP-Method-Override'));
+
+// set static files locations
+app.use(express.static(__dirname + '/public'));
+
+// rutas ==================================================
+require('.rutas')(app);
+
+// start app ==================================================
+// startu la app en http://localhost:8080
+app.listen(port);
+
+// aviso al usuario
+console.log('Estoy escuchando en ' + port);
+
+// expose app
+exports = module.exports = app;

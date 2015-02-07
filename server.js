@@ -29,7 +29,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(__dirname + '/public'));
 
 // rutas ==================================================
-require('.rutas')(app);
+require('./rutas')(app);
 
 // start app ==================================================
 // startu la app en http://localhost:8080
